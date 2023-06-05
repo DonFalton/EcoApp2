@@ -28,8 +28,7 @@ public class MainActivity extends AppCompatActivity {
 
         BottomNavigationView navView = findViewById(R.id.nav_view);
 
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
+        // Configurar los identificadores de los elementos de menú como destinos de nivel superior.
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.navigation_home, R.id.navigation_notifications,
                 R.id.navigation_map, R.id.navigation_more, R.id.navigation_recycle) // <-- Agrega este id
@@ -38,32 +37,39 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
 
+        // Escucha el evento de selección de elementos en la barra de navegación inferior
         navView.setOnNavigationItemSelectedListener(item -> {
             if (item.getItemId() == R.id.navigation_more) {
-                // inflar y mostrar el menú emergente
+                // Si se selecciona el elemento "Más"
+                // Inflar y mostrar el menú emergente
                 PopupMenu popup = new PopupMenu(MainActivity.this, findViewById(R.id.navigation_more));
                 MenuInflater inflater = popup.getMenuInflater();
                 inflater.inflate(R.menu.menu_more, popup.getMenu());
                 popup.setOnMenuItemClickListener(popupItem -> {
                     int id = popupItem.getItemId();
                     if (id == R.id.action_messages) {
-                        // Navega al fragmento de mensajes
+                        // Si se selecciona "Mensajes"
+                        // Navegar al fragmento de mensajes
                         navController.navigate(R.id.navigation_messages);
                         return true;
                     } else if (id == R.id.action_settings) {
-                        // Navega al fragmento de ajustes
+                        // Si se selecciona "Ajustes"
+                        // Navegar al fragmento de ajustes
                         navController.navigate(R.id.navigation_settings);
                         return true;
                     } else if (id == R.id.action_help) {
-                        // Navega al fragmento de ayuda
+                        // Si se selecciona "Ayuda"
+                        // Navegar al fragmento de ayuda
                         navController.navigate(R.id.navigation_help);
                         return true;
                     } else if (id == R.id.action_contact) {
-                        // Navega al fragmento de contacto
+                        // Si se selecciona "Contacto"
+                        // Navegar al fragmento de contacto
                         navController.navigate(R.id.navigation_contact);
                         return true;
                     } else if (id == R.id.action_about) {
-                        // Navega al fragmento "acerca de"
+                        // Si se selecciona "Acerca de"
+                        // Navegar al fragmento "Acerca de"
                         navController.navigate(R.id.navigation_about);
                         return true;
                     }
@@ -72,10 +78,13 @@ public class MainActivity extends AppCompatActivity {
                 popup.show();
                 return true;
             }
+            // Si se selecciona otro elemento de la barra de navegación inferior
+            // Utilizar la librería de NavigationUI para manejar la navegación
             NavigationUI.onNavDestinationSelected(item, navController);
             return false;
         });
 
+        // Configurar la barra de navegación inferior con el controlador de navegación
         NavigationUI.setupWithNavController(binding.navView, navController);
     }
 }

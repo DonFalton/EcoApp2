@@ -1,12 +1,21 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Item de menú para la opción "Mensajes/Notificaciones" -->
     <item android:id="@+id/action_messages"
         android:title="Mensajes/Notificaciones" />
+
+    <!-- Item de menú para la opción "Ajustes" -->
     <item android:id="@+id/action_settings"
         android:title="Ajustes" />
+
+    <!-- Item de menú para la opción "Ayuda" -->
     <item android:id="@+id/action_help"
         android:title="Ayuda" />
+
+    <!-- Item de menú para la opción "Contacto" -->
     <item android:id="@+id/action_contact"
         android:title="Contacto" />
+
+    <!-- Item de menú para la opción "Acerca de" -->
     <item android:id="@+id/action_about"
         android:title="Acerca de" />
 </menu>

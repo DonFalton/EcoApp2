@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".ui.recycle.RecycleFragment">
 
+    <!-- RecyclerView para mostrar una lista de elementos -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="0dp"
