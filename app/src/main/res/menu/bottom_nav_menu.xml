@@ -7,19 +7,23 @@
         android:title="@string/title_home" />
 
     <item
-        android:id="@+id/navigation_map"
-        android:icon="@drawable/baseline_map_24"
-        android:title="@string/title_map" />
-
-    <item
         android:id="@+id/navigation_dashboard"
         android:icon="@drawable/baseline_recycling_24"
         android:title="@string/title_dashboard" />
+
+    <item
+        android:id="@+id/navigation_map"
+        android:icon="@drawable/baseline_map_24"
+        android:title="@string/title_map" />
 
     <item
         android:id="@+id/navigation_notifications"
         android:icon="@drawable/baseline_chat_24"
         android:title="@string/title_notifications" />
 
+    <item
+        android:id="@+id/navigation_more"
+        android:icon="@drawable/baseline_more_horiz_24"
+        android:title="@string/title_more" />
 
 </menu>
