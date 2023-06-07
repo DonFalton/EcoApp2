@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "948475489349",
+    "project_id": "ecoapp-388900",
+    "storage_bucket": "ecoapp-388900.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:948475489349:android:e4d32bf86f8ee53644c72c",
+        "android_client_info": {
+          "package_name": "com.tgf.ecoapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "948475489349-33u011u2q8uihh3vjhpjdmq8rf7tk2r3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBMwutsxiUVQ6QmBaeN6GAndQTkR7_YoCI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "948475489349-33u011u2q8uihh3vjhpjdmq8rf7tk2r3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
