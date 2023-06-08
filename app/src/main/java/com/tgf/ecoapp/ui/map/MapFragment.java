@@ -1,23 +1,28 @@
 package com.tgf.ecoapp.ui.map;
 
+import android.Manifest;  // <-- Agrega esta importación
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
+import android.widget.Toast;
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.tgf.ecoapp.R;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback {
 
@@ -46,7 +51,27 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         // Enable Zoom Controls
         mMap.getUiSettings().setZoomControlsEnabled(true);
-        mMap.setPadding(0, 0, 0, 100);  // Move the zoom controls up
+       // mMap.setPadding(0, 0, 0, 100);  // Move the zoom controls up
+
+        // Check if we have the location permission
+        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            // We have the permission
+            mMap.setMyLocationEnabled(true);
+        } else {
+            // We do not have the permission, request it
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+        }
+
+        // Show the location button
+        mMap.getUiSettings().setMyLocationButtonEnabled(true);
+
+        // Set location button position
+        UiSettings uiSettings = mMap.getUiSettings();
+        uiSettings.setMyLocationButtonEnabled(true);
+        uiSettings.setZoomControlsEnabled(true);
+        uiSettings.setCompassEnabled(true);
+        uiSettings.setMapToolbarEnabled(true);
 
         LatLng madrid = new LatLng(40.416775, -3.703790);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(madrid, 15));
@@ -81,5 +106,22 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                         // Log: Error getting document
                     }
                 });
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == 1) {
+            if (permissions[0].equals(Manifest.permission.ACCESS_FINE_LOCATION)
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission was granted
+                if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    return;
+                }
+                mMap.setMyLocationEnabled(true);
+            } else {
+                // Permission was denied
+                Toast.makeText(getContext(), "Location permission denied", Toast.LENGTH_LONG).show();
+            }
+        }
     }
 }
