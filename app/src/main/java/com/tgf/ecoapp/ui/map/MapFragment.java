@@ -23,20 +23,28 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.tgf.ecoapp.R;
 
 import org.imperiumlabs.geofirestore.GeoFirestore;
 import org.imperiumlabs.geofirestore.GeoQuery;
 import org.imperiumlabs.geofirestore.listeners.GeoQueryEventListener;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import com.google.maps.android.clustering.ClusterManager;
+import com.google.maps.android.clustering.view.DefaultClusterRenderer;
+
 
 public class MapFragment extends Fragment implements OnMapReadyCallback {
 
@@ -110,6 +118,18 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         LatLng madrid = new LatLng(40.416775, -3.703790);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(madrid, 15));
 
+
+        // Crea el administrador de agrupación de marcadores
+        ClusterManager<MyItem> clusterManager = new ClusterManager<>(getContext(), mMap);
+
+        // Crea el renderizador de marcadores de agrupación
+        DefaultClusterRenderer<MyItem> clusterRenderer = new DefaultClusterRenderer<>(getContext(), mMap, clusterManager);
+        clusterManager.setRenderer(clusterRenderer);
+
+        // Establece el administrador de agrupación de marcadores en el mapa
+        mMap.setOnCameraIdleListener(clusterManager);
+        mMap.setOnMarkerClickListener(clusterManager);
+
         // Agregar contenedores desde Firestore
         addContainersFromFirestore("ENVASES", BitmapDescriptorFactory.HUE_YELLOW); // Amarillo
         addContainersFromFirestore("PAPEL-CARTON", BitmapDescriptorFactory.HUE_BLUE); // Azul
@@ -127,8 +147,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
             for (String contenedorType : contenedorTypes) {
                 for (String barrio : barrios) {
-                    // Crea una referencia a GeoFirestore.
-                    GeoFirestore geoFirestore = new GeoFirestore(db.collection("ContenedoresLite").document(contenedorType).collection(barrio));
+                    // Crea una referencia a la colección correspondiente en Firestore.
+                    CollectionReference collectionRef = db.collection("ContenedoresLite").document(contenedorType).collection(barrio);
+
+                    // Crea una instancia de GeoFirestore en base a la colección de Firestore.
+                    GeoFirestore geoFirestore = new GeoFirestore(collectionRef);
 
                     // Crea una GeoQuery en la ubicación actual.
                     GeoQuery geoQuery = geoFirestore.queryAtLocation(new GeoPoint((sw.getLatitude() + ne.getLatitude()) / 2, (sw.getLongitude() + ne.getLongitude()) / 2), getDistance(sw, ne) / 2);
@@ -187,6 +210,33 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                             Toast.makeText(getContext(), "Error: " + error.getMessage(), Toast.LENGTH_LONG).show();
                         }
                     });
+
+                    // Obtiene los documentos de la colección utilizando Firestore.
+                    collectionRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                        @Override
+                        public void onSuccess(QuerySnapshot querySnapshot) {
+                            List<MyItem> myItems = new ArrayList<>();
+
+                            for (DocumentSnapshot document : querySnapshot.getDocuments()) {
+                                // Obtén la ubicación y otros detalles del marcador desde Firestore
+                                Double latitude = document.getDouble("latitude");
+                                Double longitude = document.getDouble("longitude");
+                                String key = document.getId();
+
+                                // Verifica si latitude y longitude no son null
+                                if (latitude != null && longitude != null) {
+                                    // Crea un nuevo objeto MyItem y agrégalo a la lista
+                                    MyItem myItem = new MyItem(latitude, longitude, key);
+                                    myItems.add(myItem);
+                                }
+                            }
+
+                            // Agrega la lista de MyItems al ClusterManager
+                            clusterManager.addItems(myItems);
+                            clusterManager.cluster();
+                        }
+                    });
+
                 }
             }
             // Remueve marcadores que están fuera de la vista.
