@@ -1,6 +1,6 @@
 package com.tgf.ecoapp.ui.map;
 
-import android.Manifest;  // <-- Agrega esta importación
+import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -23,6 +23,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.tgf.ecoapp.R;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.List;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback {
 
@@ -77,15 +79,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(madrid, 15));
 
         // Read data from Firestore and add markers
-        db.collection("ContenedoresLite")
+        db.collection("ContenedoresMini")
                 .document("ENVASES")
                 .collection("CENTRO")
-                .document("167909")
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        DocumentSnapshot document = task.getResult();
-                        if (document.exists()) {
+                        List<DocumentSnapshot> documents = task.getResult().getDocuments();
+                        for (DocumentSnapshot document : documents) {
                             Double latitud = document.getDouble("LATITUD");
                             Double longitud = document.getDouble("LONGITUD");
                             String nombre = document.getString("Nombre");
@@ -99,14 +100,42 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                             } else {
                                 // Log: One of the required fields is null
                             }
-                        } else {
-                            // Log: No such document
                         }
                     } else {
-                        // Log: Error getting document
+                        // Log: Error getting documents
+                    }
+                });
+
+        // Read data from Firestore and add markers for LATINA
+        db.collection("ContenedoresMini")
+                .document("ENVASES")
+                .collection("LATINA")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        List<DocumentSnapshot> documents = task.getResult().getDocuments();
+                        for (DocumentSnapshot document : documents) {
+                            Double latitud = document.getDouble("LATITUD");
+                            Double longitud = document.getDouble("LONGITUD");
+                            String nombre = document.getString("Nombre");
+
+                            if (latitud != null && longitud != null && nombre != null) {
+                                LatLng containerLatLng = new LatLng(latitud, longitud);
+                                mMap.addMarker(new MarkerOptions()
+                                        .position(containerLatLng)
+                                        .title(nombre)
+                                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))); // Set marker color to green
+                            } else {
+                                // Log: One of the required fields is null
+                            }
+                        }
+                    } else {
+                        // Log: Error getting documents
                     }
                 });
     }
+
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
