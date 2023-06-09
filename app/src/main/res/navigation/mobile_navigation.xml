@@ -68,4 +68,12 @@
         android:label="@string/title_about"
         tools:layout="@layout/fragment_about" />
 
+<!--    &lt;!&ndash; Fragmento de acerca de &ndash;&gt;-->
+<!--    <fragment-->
+<!--        android:id="@+id/navigation_more"-->
+<!--        android:name="com.tgf.ecoapp.ui.others.AboutFragment"-->
+<!--        android:label="@string/title_about"-->
+<!--        tools:layout="@layout/fragment_about" />-->
+
+
 </navigation>
