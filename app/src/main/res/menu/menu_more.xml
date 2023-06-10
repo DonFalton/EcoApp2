@@ -1,21 +1,26 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <!-- Item de menú para la opción "Mensajes/Notificaciones" -->
     <item android:id="@+id/action_messages"
+        android:icon="@drawable/baseline_insert_comment_24"
         android:title="Mensajes/Notificaciones" />
 
     <!-- Item de menú para la opción "Ajustes" -->
     <item android:id="@+id/action_settings"
+        android:icon="@drawable/baseline_settings_24"
         android:title="Ajustes" />
 
     <!-- Item de menú para la opción "Ayuda" -->
     <item android:id="@+id/action_help"
+        android:icon="@drawable/baseline_question_mark_24"
         android:title="Ayuda" />
 
     <!-- Item de menú para la opción "Contacto" -->
     <item android:id="@+id/action_contact"
+        android:icon="@drawable/baseline_mail_outline_24"
         android:title="Contacto" />
 
     <!-- Item de menú para la opción "Acerca de" -->
     <item android:id="@+id/action_about"
+        android:icon="@drawable/baseline_cached_24"
         android:title="Acerca de" />
 </menu>

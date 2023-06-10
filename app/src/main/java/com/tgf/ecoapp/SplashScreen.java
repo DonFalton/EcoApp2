@@ -16,7 +16,7 @@ public class SplashScreen extends AppCompatActivity {
         setContentView(R.layout.activity_splash);
 
         // Establecer el tiempo de duración del splash screen en milisegundos
-        int splashScreenDuration = 3000; // Por ejemplo, 3 segundos
+        int splashScreenDuration = 1000; // Por ejemplo, 1 segundo.
 
         // Crear un objeto Handler para manejar la ejecución del código después del tiempo de duración
         new Handler().postDelayed(new Runnable() {

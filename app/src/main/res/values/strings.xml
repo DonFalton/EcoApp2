@@ -14,4 +14,11 @@
     <string name="title_about">Acerca de</string>
     <string name="title_recycle">Recycle</string>
 
+    <!--Strings of Contact-->
+    <string name="name">Nombre</string>
+    <string name="subject">Asunto</string>
+    <string name="email">Correo electrónico</string>
+    <string name="message">Mensaje</string>
+    <string name="send">Enviar</string>
+
 </resources>

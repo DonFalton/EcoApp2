@@ -2,6 +2,8 @@ package com.tgf.ecoapp;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.widget.PopupMenu;
 
@@ -40,38 +42,38 @@ public class MainActivity extends AppCompatActivity {
 
         // Escucha el evento de selección de elementos en la barra de navegación inferior
         navView.setOnNavigationItemSelectedListener(item -> {
-            int id = item.getItemId();
-            if (id == R.id.navigation_more) {
+            if (item.getItemId() == R.id.navigation_more) {
                 // Log message
                 Log.d(TAG, "Menú emergente abierto");
                 // Si se selecciona el elemento "Más"
                 // Inflar y mostrar el menú emergente
                 View view = navView.findViewById(R.id.navigation_more);  // Obtén la vista del elemento de menú correspondiente
-                PopupMenu popup = new PopupMenu(MainActivity.this, view); // Úsala como el ancla del menú emergente
-                popup.getMenuInflater().inflate(R.menu.menu_more, popup.getMenu());
+                PopupMenu popup = new PopupMenu(MainActivity.this, view);// Úsala como el ancla del menú emergente
+                MenuInflater inflater = popup.getMenuInflater();
+                inflater.inflate(R.menu.menu_more, popup.getMenu());
                 popup.setOnMenuItemClickListener(popupItem -> {
-                    int popupId = popupItem.getItemId();
-                    if (popupId == R.id.action_messages) {
+                    int id = popupItem.getItemId();
+                    if (id == R.id.action_messages) {
                         // Si se selecciona "Mensajes"
                         // Navegar al fragmento de mensajes
                         navController.navigate(R.id.navigation_messages);
                         return true;
-                    } else if (popupId == R.id.action_settings) {
+                    } else if (id == R.id.action_settings) {
                         // Si se selecciona "Ajustes"
                         // Navegar al fragmento de ajustes
                         navController.navigate(R.id.navigation_settings);
                         return true;
-                    } else if (popupId == R.id.action_help) {
+                    } else if (id == R.id.action_help) {
                         // Si se selecciona "Ayuda"
                         // Navegar al fragmento de ayuda
                         navController.navigate(R.id.navigation_help);
                         return true;
-                    } else if (popupId == R.id.action_contact) {
+                    } else if (id == R.id.action_contact) {
                         // Si se selecciona "Contacto"
                         // Navegar al fragmento de contacto
                         navController.navigate(R.id.navigation_contact);
                         return true;
-                    } else if (popupId == R.id.action_about) {
+                    } else if (id == R.id.action_about) {
                         // Si se selecciona "Acerca de"
                         // Navegar al fragmento "Acerca de"
                         navController.navigate(R.id.navigation_about);
@@ -82,13 +84,16 @@ public class MainActivity extends AppCompatActivity {
                 popup.show();
                 return true;
             } else {
-                // Si se selecciona otro elemento de la barra de navegación inferior
-                // Utilizar la librería de NavigationUI para manejar la navegación
-                return NavigationUI.onNavDestinationSelected(item, navController);
+                // Si se selecciona otro elemento de la# Continuing the Java code from the previous message
+                return NavigationUI.onNavDestinationSelected(item, navController) || super.onOptionsItemSelected(item);
             }
         });
+    }
 
-        // La línea a continuación está comentada para evitar la anulación de la configuración del listener
-        // NavigationUI.setupWithNavController(binding.navView, navController);
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_more, menu);
+        return true;
     }
 }
