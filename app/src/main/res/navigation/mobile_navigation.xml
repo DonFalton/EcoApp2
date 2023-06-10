@@ -5,28 +5,75 @@
     android:id="@+id/mobile_navigation"
     app:startDestination="@+id/navigation_home">
 
+    <!-- Fragmento de inicio -->
     <fragment
         android:id="@+id/navigation_home"
         android:name="com.tgf.ecoapp.ui.home.HomeFragment"
         android:label="@string/title_home"
         tools:layout="@layout/fragment_home" />
 
+    <!-- Fragmento de reciclaje -->
     <fragment
-        android:id="@+id/navigation_dashboard"
-        android:name="com.tgf.ecoapp.ui.dashboard.DashboardFragment"
-        android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_dashboard" />
+        android:id="@+id/navigation_recycle"
+        android:name="com.tgf.ecoapp.ui.recycle.RecycleFragment"
+        android:label="@string/title_recycle"
+        tools:layout="@layout/fragment_recycle" />
 
+    <!-- Fragmento de notificaciones -->
     <fragment
         android:id="@+id/navigation_notifications"
         android:name="com.tgf.ecoapp.ui.notifications.NotificationsFragment"
         android:label="@string/title_notifications"
         tools:layout="@layout/fragment_notifications" />
 
+    <!-- Fragmento de mapa -->
     <fragment
         android:id="@+id/navigation_map"
         android:name="com.tgf.ecoapp.ui.map.MapFragment"
         android:label="@string/title_map"
         tools:layout="@layout/fragment_map" />
+
+    <!-- Fragmento de mensajes -->
+    <fragment
+        android:id="@+id/navigation_messages"
+        android:name="com.tgf.ecoapp.ui.others.messages.MessagesFragment"
+        android:label="@string/title_messages"
+        tools:layout="@layout/fragment_messages" />
+
+    <!-- Fragmento de ajustes -->
+    <fragment
+        android:id="@+id/navigation_settings"
+        android:name="com.tgf.ecoapp.ui.others.settings.SettingsFragment"
+        android:label="@string/title_settings"
+        tools:layout="@layout/fragment_settings" />
+
+    <!-- Fragmento de ayuda -->
+    <fragment
+        android:id="@+id/navigation_help"
+        android:name="com.tgf.ecoapp.ui.others.HelpFragment"
+        android:label="@string/title_help"
+        tools:layout="@layout/fragment_help" />
+
+    <!-- Fragmento de contacto -->
+    <fragment
+        android:id="@+id/navigation_contact"
+        android:name="com.tgf.ecoapp.ui.others.ContactFragment"
+        android:label="@string/title_contact"
+        tools:layout="@layout/fragment_contact" />
+
+    <!-- Fragmento de acerca de -->
+    <fragment
+        android:id="@+id/navigation_about"
+        android:name="com.tgf.ecoapp.ui.others.AboutFragment"
+        android:label="@string/title_about"
+        tools:layout="@layout/fragment_about" />
+
+<!--    &lt;!&ndash; Fragmento de acerca de &ndash;&gt;-->
+<!--    <fragment-->
+<!--        android:id="@+id/navigation_more"-->
+<!--        android:name="com.tgf.ecoapp.ui.others.AboutFragment"-->
+<!--        android:label="@string/title_about"-->
+<!--        tools:layout="@layout/fragment_about" />-->
+
 
 </navigation>
