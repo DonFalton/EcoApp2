@@ -58,7 +58,7 @@ dependencies {
 
     implementation 'com.google.android.gms:play-services-maps:18.1.0'
 
-// Import the Firebase BoM
+    // Import the Firebase BoM
     implementation platform('com.google.firebase:firebase-bom:32.0.0')
 
     // When using the BoM, you don't specify versions in Firebase library dependencies
@@ -76,5 +76,4 @@ dependencies {
     implementation 'com.github.imperiumlabs:GeoFirestore-Android:v1.5.0'
 
     implementation 'com.google.maps.android:android-maps-utils:2.2.0'
-
 }

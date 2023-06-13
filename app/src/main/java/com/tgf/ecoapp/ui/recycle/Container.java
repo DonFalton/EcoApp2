@@ -1,46 +1,56 @@
 package com.tgf.ecoapp.ui.recycle;
 
-import java.io.Serializable;
-
 /**
- * Created by Martin B. on 5/6/23.
+ * Created by Martin B. on 12/6/23.
  * martin.blazquez.dam@gmail.com
  */
-public class Container implements Serializable {
-    private String name; // Nombre del contenedor
-    private String description; // Descripción del contenedor
-    private int imageResId; // ID del recurso de imagen del contenedor
+public class Container {
+    private String Nombre;
+    private String Contenido;
+    private String Color;
+    private String Descripción;
 
-    // Constructor
-    public Container(String name, String description, int imageResId) {
-        this.name = name;
-        this.description = description;
-        this.imageResId = imageResId;
+    // Asegúrate de tener un constructor vacío para Firestore
+    public Container() {}
+
+    public Container(String Nombre, String Contenido, String Color, String Descripción) {
+        this.Nombre = Nombre;
+        this.Contenido = Contenido;
+        this.Color = Color;
+        this.Descripción = Descripción;
     }
 
-    // Getters para obtener los valores de los atributos
+    // Getters y Setters para cada campo
 
-    /**
-     * Obtiene el nombre del contenedor.
-     * @return El nombre del contenedor.
-     */
-    public String getName() {
-        return name;
+    public String getNombre() {
+        return Nombre;
     }
 
-    /**
-     * Obtiene la descripción del contenedor.
-     * @return La descripción del contenedor.
-     */
-    public String getDescription() {
-        return description;
+    public void setNombre(String nombre) {
+        Nombre = nombre;
     }
 
-    /**
-     * Obtiene el ID del recurso de imagen del contenedor.
-     * @return El ID del recurso de imagen del contenedor.
-     */
-    public int getImageResId() {
-        return imageResId;
+    public String getContenido() {
+        return Contenido;
+    }
+
+    public void setContenido(String contenido) {
+        Contenido = contenido;
+    }
+
+    public String getColor() {
+        return Color;
+    }
+
+    public void setColor(String color) {
+        Color = color;
+    }
+
+    public String getDescripción() {
+        return Descripción;
+    }
+
+    public void setDescripción(String descripción) {
+        Descripción = descripción;
     }
 }

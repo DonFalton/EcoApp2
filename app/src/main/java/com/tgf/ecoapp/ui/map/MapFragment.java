@@ -148,7 +148,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             for (String contenedorType : contenedorTypes) {
                 for (String barrio : barrios) {
                     // Crea una referencia a la colección correspondiente en Firestore.
-                    CollectionReference collectionRef = db.collection("ContenedoresMini").document(contenedorType).collection(barrio);
+                    CollectionReference collectionRef = db.collection("ContenedoresLite").document(contenedorType).collection(barrio);
 
                     // Crea una instancia de GeoFirestore en base a la colección de Firestore.
                     GeoFirestore geoFirestore = new GeoFirestore(collectionRef);
@@ -284,7 +284,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     // Este método personalizado añade marcadores al mapa desde la base de datos Firestore
     // basándose en el tipo de contenedor y el color que se deben usar.
     private void addContainersFromFirestore(String contenedorType, float hueColor) {
-        db.collection("ContenedoresMini")
+        db.collection("ContenedoresLite")
                 .document(contenedorType)
                 .collection("g") // Changed from collectionGroup to collection.
                 .get()

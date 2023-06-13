@@ -14,56 +14,33 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SettingsFragment extends Fragment {
-
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    private String mParam1;
-    private String mParam2;
+    private RecyclerView settingsRecyclerView;
+    private SettingsAdapter settingsAdapter;
 
     public SettingsFragment() {
         // Required empty public constructor
     }
 
-    public static SettingsFragment newInstance(String param1, String param2) {
-        SettingsFragment fragment = new SettingsFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
 
-        // Get the RecyclerView
-        RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
+        settingsRecyclerView = view.findViewById(R.id.settings_list);
+        settingsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        // Create the list of options
-        List<SettingOption> settingsOptions = new ArrayList<>();
-        settingsOptions.add(new SettingOption("Dirección", AddressFragment.class));
-        settingsOptions.add(new SettingOption("Notificaciones", NotificationsFragment.class));
-        settingsOptions.add(new SettingOption("Idioma", LanguageFragment.class));
-        settingsOptions.add(new SettingOption("Tema", ThemeFragment.class));
-
-        // Create and set the adapter
-        // Usa getChildFragmentManager() aquí
-        SettingsAdapter adapter = new SettingsAdapter(settingsOptions, getChildFragmentManager());
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        // Pass the current context to the adapter
+        settingsAdapter = new SettingsAdapter(getActivity(), getSettingsList());
+        settingsRecyclerView.setAdapter(settingsAdapter);
 
         return view;
+    }
+
+    private List<Setting> getSettingsList() {
+        List<Setting> settings = new ArrayList<>();
+        settings.add(new Setting("Dirección"));
+        settings.add(new Setting("Notificaciones"));
+        settings.add(new Setting("Idioma"));
+        settings.add(new Setting("Tema"));
+        return settings;
     }
 }

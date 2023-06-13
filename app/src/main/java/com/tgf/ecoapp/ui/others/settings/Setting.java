@@ -1,18 +1,16 @@
 package com.tgf.ecoapp.ui.others.settings;
 
-import androidx.fragment.app.Fragment;
-
 /**
- * Created by Martin B. on 10/6/23.
+ * Created by Martin B. on 13/6/23.
  * martin.blazquez.dam@gmail.com
  */
-public class SettingOption {
+public class Setting {
 
-    private String name; // nombre de la opción
+    private String name; // nombre del ajuste
 
     // Constructor, getters y setters
 
-    public SettingOption(String name) {
+    public Setting(String name) {
         this.name = name;
     }
 

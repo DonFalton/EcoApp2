@@ -1,49 +1,66 @@
 package com.tgf.ecoapp.ui.recycle;
 
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.tgf.ecoapp.R;
+
 import java.util.ArrayList;
-import java.util.List;
 
-public class RecycleFragment extends Fragment implements ContainerAdapter.OnContainerClickListener {
-
-    private List<Container> containerList;
+public class RecycleFragment extends Fragment implements RecycleAdapter.OnContainerListener {
+    private RecycleViewModel viewModel;
+    private RecycleAdapter adapter;
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_recycle, container, false);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_recycle, container, false);
+    }
 
-        RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        RecyclerView recyclerView = view.findViewById(R.id.recycle_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        // Define your containers here
-        containerList = new ArrayList<>();
-        containerList.add(new Container("Contenedor gris", "Es el que sirve para depositar los residuos orgánicos, como restos de comida, así como otro tipo de residuos como pañales, papel sucio, bastoncillos…", R.drawable.contenedor_gris));
-        containerList.add(new Container("Contenedor amarillo", "Es el encargado del reciclaje de los plásticos, tetra brik y el metal. Recuerde que los tetra brik se fabrican a partir de finas capas de celulosa, aluminio y plásticos, que son muy difíciles de reciclar.", R.drawable.contenedor_amarillo));
-        containerList.add(new Container("Contenedor azul", "Es el que recoge el papel y el cartón que no estén sucios. A los sobres hay que quitarle las ventanillas de plástico y a los cuadernos las espirales.", R.drawable.contenedor_azul));
-        containerList.add(new Container("Contenedor verde", "Es el encargado del vidrio, siempre sin tapas de metal o de corcho y siempre que el vidrio sea utilizado para envasar alimentos, no así cristales de ventanas, vidrios planos o vasos rotos, que por su alto contenido en plomo deben ir al punto limpio para ser tratados en otra cadena de reciclaje.", R.drawable.contenedor_verde));
-        containerList.add(new Container("Contenedor marrón", "En algunos municipios de la Comunidad de Madrid está implementado el contenedor marrón, en el que se despositan restos orgánicos de comida de origen animal (carne, pescado, espinas, queso o cáscaras de huevo) o vegetal (verduras, frutas, semillas, cáscaras), restos de pan, posos de café, bolsas de infusiones, cerillas o tapones de corcho.", R.drawable.contenedor_marron));
-
-        ContainerAdapter adapter = new ContainerAdapter(containerList, this);
+        adapter = new RecycleAdapter(new ArrayList<>(), this);
         recyclerView.setAdapter(adapter);
 
-        return view;
+        viewModel = new ViewModelProvider(this).get(RecycleViewModel.class);
+
+        viewModel.getContainers().observe(getViewLifecycleOwner(), containers -> {
+            // update UI
+            adapter = new RecycleAdapter(containers, this);
+            recyclerView.setAdapter(adapter);
+        });
     }
 
     @Override
     public void onContainerClick(int position) {
-        Container container = containerList.get(position);
-        // Navigate to ContainerDetailFragment
-        ContainerDetailFragment fragment = ContainerDetailFragment.newInstance(container);
-        getParentFragmentManager().beginTransaction().replace(R.id.container, fragment).addToBackStack(null).commit();
+        Container container = viewModel.getContainers().getValue().get(position);
+
+        // bundle to pass to the details fragment
+        Bundle bundle = new Bundle();
+        bundle.putString("nombre", container.getNombre());
+        bundle.putString("contenido", container.getContenido());
+        bundle.putString("color", container.getColor());
+        bundle.putString("descripcion", container.getDescripción());
+
+        // navigate to the details fragment
+        NavController navController = Navigation.findNavController(requireView());
+        navController.navigate(R.id.action_recycleFragment_to_recycleDetailFragment, bundle);
     }
 }

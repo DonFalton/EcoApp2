@@ -3,26 +3,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="8dp">
 
-    <!-- ImageView para mostrar una imagen -->
-    <ImageView
-        android:id="@+id/container_image"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_marginBottom="8dp"
-        android:scaleType="fitCenter" />
-
-    <!-- TextView para mostrar el nombre del contenedor -->
     <TextView
-        android:id="@+id/container_name"
+        android:id="@+id/container_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="18sp"
         android:textStyle="bold"
-        android:layout_marginBottom="4dp" />
+        android:paddingBottom="8dp" />
 
-    <!-- TextView para mostrar la descripción del contenedor -->
     <TextView
         android:id="@+id/container_description"
         android:layout_width="wrap_content"
