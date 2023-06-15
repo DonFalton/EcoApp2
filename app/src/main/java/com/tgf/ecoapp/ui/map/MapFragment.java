@@ -97,7 +97,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 // Cuando se selecciona un elemento, actualiza los marcadores.
-                updateMarkers(contenedorTypes.get(position));
+                String selectedContenedorType = contenedorTypes.get(position);
+                updateMarkers(selectedContenedorType);
+                addContainersFromFirestore(selectedContenedorType, contenedorColors.get(selectedContenedorType));
             }
 
             @Override
@@ -107,18 +109,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         });
 
         return root;
-    }
-
-    // Este método actualiza los marcadores en el mapa basado en el tipo de contenedor.
-    private void updateMarkers(String contenedorType) {
-        // Remueve todos los marcadores existentes.
-        for (Marker marker : markers.values()) {
-            marker.remove();
-        }
-        markers.clear();
-
-        // Agrega los nuevos marcadores.
-        addContainersFromFirestore(contenedorType, contenedorColors.get(contenedorType));
     }
 
     @Override
@@ -167,25 +157,24 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mMap.setOnMarkerClickListener(clusterManager);
 
         // Agregar contenedores desde Firestore
-        addContainersFromFirestore("ENVASES", BitmapDescriptorFactory.HUE_YELLOW); // Amarillo
-        addContainersFromFirestore("PAPEL-CARTON", BitmapDescriptorFactory.HUE_BLUE); // Azul
-        addContainersFromFirestore("ORGANICA", 30); // Marrón
-        addContainersFromFirestore("VIDRIO", BitmapDescriptorFactory.HUE_GREEN); // Verde
-        addContainersFromFirestore("RESTO", BitmapDescriptorFactory.HUE_ORANGE); // Naranja
+        String selectedContainerType = spinner.getSelectedItem().toString();
+        addContainersFromFirestore(selectedContainerType, contenedorColors.get(selectedContainerType));
+
+
+
 
         // Crea un GeoQuery para obtener los contenedores en la ubicación actual.
         mMap.setOnCameraIdleListener(() -> {
-            LatLngBounds bounds = mMap.getProjection().getVisibleRegion().latLngBounds;
+                    LatLngBounds bounds = mMap.getProjection().getVisibleRegion().latLngBounds;
 
-            // Obtiene las coordenadas de la esquina inferior izquierda y superior derecha.
-            GeoPoint sw = new GeoPoint(bounds.southwest.latitude, bounds.southwest.longitude);
-            GeoPoint ne = new GeoPoint(bounds.northeast.latitude, bounds.northeast.longitude);
+                    // Obtiene las coordenadas de la esquina inferior izquierda y superior derecha.
+                    GeoPoint sw = new GeoPoint(bounds.southwest.latitude, bounds.southwest.longitude);
+                    GeoPoint ne = new GeoPoint(bounds.northeast.latitude, bounds.northeast.longitude);
 
-            for (String contenedorType : contenedorTypes) {
-                for (String barrio : barrios) {
-                    // Crea una referencia a la colección correspondiente en Firestore.
-                    CollectionReference collectionRef = db.collection("ContenedoresMini").document(contenedorType).collection(barrio);
-
+                    // Solo agrega los marcadores para el tipo de contenedor seleccionado actualmente en el spinner.
+                    for (String barrio : barrios) {
+                        // Crea una referencia a la colección correspondiente en Firestore.
+                        CollectionReference collectionRef = db.collection("ContenedoresLite").document(selectedContainerType).collection(barrio);
                     // Crea una instancia de GeoFirestore en base a la colección de Firestore.
                     GeoFirestore geoFirestore = new GeoFirestore(collectionRef);
 
@@ -208,7 +197,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                                     .position(containerLatLng)
                                     .title(key)
                                     // Busca el color en el mapa de colores.
-                                    .icon(BitmapDescriptorFactory.defaultMarker(contenedorColors.get(contenedorType))));
+                                    .icon(BitmapDescriptorFactory.defaultMarker(contenedorColors.get(selectedContainerType))));
 
                             // Guarda el marcador en el mapa.
                             markers.put(key, marker);
@@ -274,7 +263,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     });
 
                 }
-            }
+
             // Remueve marcadores que están fuera de la vista.
             Iterator<Map.Entry<String, Marker>> iterator = markers.entrySet().iterator();
             while (iterator.hasNext()) {
@@ -317,12 +306,23 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
-    // Este método personalizado añade marcadores al mapa desde la base de datos Firestore
-    // basándose en el tipo de contenedor y el color que se deben usar.
+    // Este método actualiza los marcadores en el mapa basado en el tipo de contenedor.
+    private void updateMarkers(String contenedorType) {
+        // Elimina los marcadores antiguos del mapa.
+        for (Marker marker : markers.values()) {
+            marker.remove();
+        }
+        markers.clear();
+
+        // Añade los nuevos marcadores al mapa.
+        addContainersFromFirestore(contenedorType, contenedorColors.get(contenedorType));
+    }
+
+
     private void addContainersFromFirestore(String contenedorType, float hueColor) {
-        db.collection("ContenedoresMini")
+        db.collection("ContenedoresLite")
                 .document(contenedorType)
-                .collection("g") // Changed from collectionGroup to collection.
+                .collection("g") // Cambiado de collectionGroup a collection.
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -338,12 +338,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                                         .position(containerLatLng)
                                         .title(nombre)
                                         .icon(BitmapDescriptorFactory.defaultMarker(hueColor)));
-                                allMarkers.put(marker, document.getId());
+                                // Añade el marcador al mapa markers para poder eliminarlo más tarde.
+                                markers.put(document.getId(), marker);
                             }
                         }
                     } else {
-                        // Log: Error getting documents
+                        // Log: Error obteniendo los documentos.
                     }
                 });
     }
+
 }

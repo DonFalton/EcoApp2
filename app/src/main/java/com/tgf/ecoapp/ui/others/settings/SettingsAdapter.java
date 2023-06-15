@@ -2,6 +2,7 @@ package com.tgf.ecoapp.ui.others.settings;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,6 +51,7 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.ViewHo
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         Setting setting = settings.get(position);
+        Log.d("SettingsAdapter", "Binding view for setting: " + setting.getName());
         holder.settingName.setText(setting.getName());
 
         // Set OnClickListener
@@ -66,7 +68,7 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.ViewHo
 
                 ((FragmentActivity) context).getSupportFragmentManager()
                         .beginTransaction()
-                        .replace(R.id.container, settingsDetailFragment) // assuming "container" is the id of the FrameLayout in your activity layout
+                        .replace(R.id.container, settingsDetailFragment)
                         .addToBackStack(null)
                         .commit();
             }

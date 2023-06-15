@@ -2,6 +2,8 @@ package com.tgf.ecoapp.ui.others.settings;
 
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,11 +38,14 @@ public class SettingsFragment extends Fragment {
     }
 
     private List<Setting> getSettingsList() {
+        Log.d("SettingsFragment", "Creating settings list");
         List<Setting> settings = new ArrayList<>();
         settings.add(new Setting("Dirección"));
         settings.add(new Setting("Notificaciones"));
         settings.add(new Setting("Idioma"));
         settings.add(new Setting("Tema"));
+        Log.d("SettingsFragment", "Settings list size: " + settings.size());
         return settings;
     }
+
 }

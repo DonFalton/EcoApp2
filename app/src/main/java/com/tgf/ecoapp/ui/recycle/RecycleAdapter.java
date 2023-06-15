@@ -4,6 +4,8 @@ package com.tgf.ecoapp.ui.recycle;
  * Created by Martin B. on 12/6/23.
  * martin.blazquez.dam@gmail.com
  */
+import android.graphics.Typeface;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,8 +36,14 @@ public class RecycleAdapter extends RecyclerView.Adapter<RecycleAdapter.RecycleV
 
     @Override
     public void onBindViewHolder(@NonNull RecycleViewHolder holder, int position) {
-        holder.containerName.setText(containerList.get(position).getNombre());
+        Container container = containerList.get(position);
+        holder.containerName.setText(container.getNombre());
+
+        // Establecer el estilo del texto
+        holder.containerName.setTypeface(null, Typeface.BOLD);
+        holder.containerName.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
     }
+
 
     @Override
     public int getItemCount() {

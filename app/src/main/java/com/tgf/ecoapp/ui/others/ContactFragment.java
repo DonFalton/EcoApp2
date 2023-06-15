@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -76,6 +77,12 @@ public class ContactFragment extends Fragment {
     }
 
     private void sendMessage() {
+        String email = etEmail.getText().toString().trim();
+        if (!isValidEmail(email)) {
+            sendToastMessage("Debe ingresar una cuenta de correo válida");
+            return;
+        }
+
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         Map<String, Object> message = new HashMap<>();
@@ -91,6 +98,8 @@ public class ContactFragment extends Fragment {
                     public void onSuccess(DocumentReference documentReference) {
                         // Aquí puedes mostrar un mensaje de éxito o hacer cualquier otra cosa que necesites hacer después de enviar el mensaje
                         Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
+                        sendToastMessage("Formulario enviado");
+                        clearFields();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -98,7 +107,26 @@ public class ContactFragment extends Fragment {
                     public void onFailure(@NonNull Exception e) {
                         // Aquí puedes manejar cualquier error que ocurra al intentar enviar el mensaje
                         Log.w(TAG, "Error adding document", e);
+                        sendToastMessage("Error al enviar el formulario");
                     }
                 });
+    }
+
+    private boolean isValidEmail(String email) {
+        // Utiliza una expresión regular para validar el formato del correo electrónico
+        // Puedes cambiarla o mejorarla según tus requisitos
+        String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
+        return email.matches(emailPattern);
+    }
+
+    private void sendToastMessage(String message) {
+        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    private void clearFields() {
+        etName.setText("");
+        etSubject.setText("");
+        etEmail.setText("");
+        etMessage.setText("");
     }
 }

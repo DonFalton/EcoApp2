@@ -1,5 +1,12 @@
 package com.tgf.ecoapp;
 
+import android.app.AlarmManager;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -19,11 +26,17 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.tgf.ecoapp.databinding.ActivityMainBinding;
+import com.tgf.ecoapp.ui.notifications.FraseDelDiaReceiver;
+import com.tgf.ecoapp.ui.notifications.FraseDelDiaService;
+
+import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
     private static final String TAG = "MainActivity";
+    public static final String CHANNEL_ID = FraseDelDiaService.CHANNEL_ID;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +44,8 @@ public class MainActivity extends AppCompatActivity {
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        createNotificationChannel();  // Creación del canal de notificaciones
 
         BottomNavigationView navView = findViewById(R.id.nav_view);
 
@@ -96,6 +111,37 @@ public class MainActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+
+        // En alguna parte de tu MainActivity (quizás en onCreate()), establece la alarma:
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+
+        Intent intent = new Intent(this, FraseDelDiaReceiver.class);
+        PendingIntent alarmIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
+
+//// Configura la alarma para que se dispare a las 10 a.m. (o cuando quieras)
+//        Calendar calendar = Calendar.getInstance();
+//        calendar.setTimeInMillis(System.currentTimeMillis());
+//        calendar.set(Calendar.HOUR_OF_DAY, 10);
+
+        // Configura la alarma para que se dispare un minuto después de la hora actual
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.MINUTE, 1);
+
+// Configura la alarma para que se repita todos los días a la misma hora
+        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+                AlarmManager.INTERVAL_DAY, alarmIntent);
+    }
+
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "Notificaciones de la frase del día";
+            String description = "YourChannelDescription";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
         }
     }
 

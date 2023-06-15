@@ -13,37 +13,46 @@
         <EditText
             android:id="@+id/et_name"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
+            android:maxWidth="488dp"
             android:hint="@string/name"
-            android:inputType="textPersonName" />
+            android:inputType="textPersonName"
+            tools:ignore="VisualLintTextFieldSize" />
 
         <EditText
             android:id="@+id/et_subject"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
+            android:maxWidth="488dp"
             android:hint="@string/subject"
-            android:inputType="text" />
-
+            android:inputType="text"
+            tools:ignore="VisualLintTextFieldSize" />
 
         <EditText
             android:id="@+id/et_email"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
+            android:maxWidth="488dp"
             android:hint="@string/email"
-            android:inputType="textEmailAddress" />
+            android:inputType="textEmailAddress"
+            tools:ignore="VisualLintTextFieldSize" />
 
         <EditText
             android:id="@+id/et_message"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="235dp"
+            android:maxWidth="488dp"
+            android:gravity="top"
             android:hint="@string/message"
-            android:inputType="textMultiLine" />
+            android:inputType="textMultiLine"
+            tools:ignore="VisualLintTextFieldSize" />
 
         <Button
             android:id="@+id/btn_send"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="@string/send" />
+            android:text="@string/send"
+            android:textColor="#263238" />
     </LinearLayout>
 </ScrollView>
