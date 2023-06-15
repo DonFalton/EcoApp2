@@ -1,18 +1,27 @@
 package com.tgf.ecoapp.ui.others;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.content.Intent;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.tgf.ecoapp.R;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class ContactFragment extends Fragment {
+    private static final String TAG = "ContactFragment";
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -59,28 +68,37 @@ public class ContactFragment extends Fragment {
         btnSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sendEmail();
+                sendMessage();
             }
         });
 
         return view;
     }
 
-    private void sendEmail() {
-        String recipientList = "martin.blazquez.dam@gmail.com";
-        String[] recipients = recipientList.split(",");
+    private void sendMessage() {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        String subject = etSubject.getText().toString();
-        String message = "Nombre: " + etName.getText().toString() + "\n";
-        message += "Email: " + etEmail.getText().toString() + "\n";
-        message += "Mensaje: " + "\n" + etMessage.getText().toString();
+        Map<String, Object> message = new HashMap<>();
+        message.put("name", etName.getText().toString());
+        message.put("subject", etSubject.getText().toString());
+        message.put("email", etEmail.getText().toString());
+        message.put("message", etMessage.getText().toString());
 
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.putExtra(Intent.EXTRA_EMAIL, recipients);
-        intent.putExtra(Intent.EXTRA_SUBJECT, subject);
-        intent.putExtra(Intent.EXTRA_TEXT, message);
-
-        intent.setType("message/rfc822");
-        startActivity(Intent.createChooser(intent, "Choose an email client"));
+        db.collection("messages")
+                .add(message)
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                        // Aquí puedes mostrar un mensaje de éxito o hacer cualquier otra cosa que necesites hacer después de enviar el mensaje
+                        Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        // Aquí puedes manejar cualquier error que ocurra al intentar enviar el mensaje
+                        Log.w(TAG, "Error adding document", e);
+                    }
+                });
     }
 }

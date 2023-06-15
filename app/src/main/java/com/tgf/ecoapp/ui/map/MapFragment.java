@@ -6,6 +6,9 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -67,6 +70,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         put("VIDRIO", BitmapDescriptorFactory.HUE_GREEN); // Verde
         put("RESTO", BitmapDescriptorFactory.HUE_ORANGE); // Naranja
     }};
+    private Spinner spinner;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -80,10 +84,42 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         // Inicializa Firestore.
         db = FirebaseFirestore.getInstance();
 
+        // Inicializa el Spinner.
+        spinner = root.findViewById(R.id.spinner_filter);
+
+        // Configura el adaptador para el Spinner.
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, contenedorTypes);
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(spinnerAdapter);
+
+        // Configura el listener para el Spinner.
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                // Cuando se selecciona un elemento, actualiza los marcadores.
+                updateMarkers(contenedorTypes.get(position));
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // Cuando no se selecciona nada, no hace nada.
+            }
+        });
+
         return root;
     }
 
+    // Este método actualiza los marcadores en el mapa basado en el tipo de contenedor.
+    private void updateMarkers(String contenedorType) {
+        // Remueve todos los marcadores existentes.
+        for (Marker marker : markers.values()) {
+            marker.remove();
+        }
+        markers.clear();
 
+        // Agrega los nuevos marcadores.
+        addContainersFromFirestore(contenedorType, contenedorColors.get(contenedorType));
+    }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -148,7 +184,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             for (String contenedorType : contenedorTypes) {
                 for (String barrio : barrios) {
                     // Crea una referencia a la colección correspondiente en Firestore.
-                    CollectionReference collectionRef = db.collection("ContenedoresLite").document(contenedorType).collection(barrio);
+                    CollectionReference collectionRef = db.collection("ContenedoresMini").document(contenedorType).collection(barrio);
 
                     // Crea una instancia de GeoFirestore en base a la colección de Firestore.
                     GeoFirestore geoFirestore = new GeoFirestore(collectionRef);
@@ -284,7 +320,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     // Este método personalizado añade marcadores al mapa desde la base de datos Firestore
     // basándose en el tipo de contenedor y el color que se deben usar.
     private void addContainersFromFirestore(String contenedorType, float hueColor) {
-        db.collection("ContenedoresLite")
+        db.collection("ContenedoresMini")
                 .document(contenedorType)
                 .collection("g") // Changed from collectionGroup to collection.
                 .get()
